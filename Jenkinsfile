@@ -14,7 +14,8 @@ pipeline{
 	stages {
 		stage('拉取git仓库代码'){
 			steps{
-				checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'bb77c4d8-db23-4f5f-88e1-b0307a19ad08', url: 'https://gitee.com/gaoyanbing/mytest.git']]])
+				checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '913c6142-6b62-4783-89d3-b242d0761d66', url: 'https://github.com/yanbinggao/mytest.git']]])
+
 			}
 		}
 		stage('通过maven构建项目'){
