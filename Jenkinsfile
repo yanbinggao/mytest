@@ -14,7 +14,7 @@ pipeline{
 	stages {
 		stage('拉取git仓库代码'){
 			steps{
-				checkout([$class: 'GitSCM', branches: [[name: '${tag}']], extensions: [], userRemoteConfigs: [[credentialsId: 'bb77c4d8-db23-4f5f-88e1-b0307a19ad08', url: 'https://gitee.com/gaoyanbing/mytest.git']]])
+				checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: 'bb77c4d8-db23-4f5f-88e1-b0307a19ad08', url: 'https://gitee.com/gaoyanbing/mytest.git']]])
 			}
 		}
 		stage('通过maven构建项目'){
@@ -30,14 +30,14 @@ pipeline{
 		stage('通过docker制作自定义镜像'){
 			steps{
 				sh '''mv target/*.jar docker/
-docker build -t ${JOB_NAME}:$tag docker/'''
+                                docker build -t ${JOB_NAME}:latest docker/'''
 			}
 		}
 		stage('将自定义镜像推送到Harbor'){
 			steps{
 				sh '''docker login -u ${harborUser} -p ${harborPassword} ${harborAddress}
-docker tag ${JOB_NAME}:$tag ${harborAddress}/${harborRepo}/${JOB_NAME}:$tag
-docker push ${harborAddress}/${harborRepo}/${JOB_NAME}:$tag'''
+				docker tag ${JOB_NAME}:latest ${harborAddress}/${harborRepo}/${JOB_NAME}:latest
+				docker push ${harborAddress}/${harborRepo}/${JOB_NAME}:latest'''
 			}
 		}
 		stage('将yml文件传到k8s-master上'){
