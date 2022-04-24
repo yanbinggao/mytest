@@ -14,7 +14,7 @@ pipeline{
 	stages {
 		stage('拉取git仓库代码'){
 			steps{
-				checkout([$class: 'GitSCM', branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[credentialsId: '913c6142-6b62-4783-89d3-b242d0761d66', url: 'https://github.com/yanbinggao/mytest.git']]])
+				checkout([$class: 'GitSCM', branches: [[name: '${tag}']], extensions: [], userRemoteConfigs: [[credentialsId: '913c6142-6b62-4783-89d3-b242d0761d66', url: 'https://github.com/yanbinggao/mytest.git']]])
 
 			}
 		}
@@ -37,8 +37,8 @@ pipeline{
 		stage('将自定义镜像推送到Harbor'){
 			steps{
 				sh '''docker login -u ${harborUser} -p ${harborPassword} ${harborAddress}
-				docker tag ${JOB_NAME}:latest ${harborAddress}/${harborRepo}/${JOB_NAME}:latest
-				docker push ${harborAddress}/${harborRepo}/${JOB_NAME}:latest'''
+				docker tag ${JOB_NAME}:${tag} ${harborAddress}/${harborRepo}/${JOB_NAME}:${tag}
+				docker push ${harborAddress}/${harborRepo}/${JOB_NAME}:${tag}'''
 			}
 		}
 		stage('将yml文件传到k8s-master上'){
